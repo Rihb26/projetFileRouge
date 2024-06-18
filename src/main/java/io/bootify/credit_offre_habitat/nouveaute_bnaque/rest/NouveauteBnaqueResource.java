@@ -49,7 +49,7 @@ public class NouveauteBnaqueResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<Long> updateNouveauteBnaque(@PathVariable(name = "id") final Long id,
-            @RequestBody @Valid final NouveauteBnaqueDTO nouveauteBnaqueDTO) {
+                                                      @RequestBody @Valid final NouveauteBnaqueDTO nouveauteBnaqueDTO) {
         nouveauteBnaqueService.update(id, nouveauteBnaqueDTO);
         return ResponseEntity.ok(id);
     }

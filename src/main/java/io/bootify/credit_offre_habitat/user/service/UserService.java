@@ -4,8 +4,6 @@ import io.bootify.credit_offre_habitat.envoie_dedemande.domain.EnvoieDedemande;
 import io.bootify.credit_offre_habitat.envoie_dedemande.repos.EnvoieDedemandeRepository;
 import io.bootify.credit_offre_habitat.historique_simulation.domain.HistoriqueSimulation;
 import io.bootify.credit_offre_habitat.historique_simulation.repos.HistoriqueSimulationRepository;
-import io.bootify.credit_offre_habitat.list_favoris.domain.ListFavoris;
-import io.bootify.credit_offre_habitat.list_favoris.repos.ListFavorisRepository;
 import io.bootify.credit_offre_habitat.nouveaute_bnaque.domain.NouveauteBnaque;
 import io.bootify.credit_offre_habitat.nouveaute_bnaque.repos.NouveauteBnaqueRepository;
 import io.bootify.credit_offre_habitat.simulation_pret.domain.SimulationPret;
@@ -25,20 +23,17 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final NouveauteBnaqueRepository nouveauteBnaqueRepository;
-    private final ListFavorisRepository listFavorisRepository;
     private final SimulationPretRepository simulationPretRepository;
     private final HistoriqueSimulationRepository historiqueSimulationRepository;
     private final EnvoieDedemandeRepository envoieDedemandeRepository;
 
     public UserService(final UserRepository userRepository,
             final NouveauteBnaqueRepository nouveauteBnaqueRepository,
-            final ListFavorisRepository listFavorisRepository,
             final SimulationPretRepository simulationPretRepository,
             final HistoriqueSimulationRepository historiqueSimulationRepository,
             final EnvoieDedemandeRepository envoieDedemandeRepository) {
         this.userRepository = userRepository;
         this.nouveauteBnaqueRepository = nouveauteBnaqueRepository;
-        this.listFavorisRepository = listFavorisRepository;
         this.simulationPretRepository = simulationPretRepository;
         this.historiqueSimulationRepository = historiqueSimulationRepository;
         this.envoieDedemandeRepository = envoieDedemandeRepository;
@@ -107,12 +102,7 @@ public class UserService {
             referencedWarning.addParam(userNouveauteBnaque.getId());
             return referencedWarning;
         }
-        final ListFavoris userListFavoris = listFavorisRepository.findFirstByUser(user);
-        if (userListFavoris != null) {
-            referencedWarning.setKey("user.listFavoris.user.referenced");
-            referencedWarning.addParam(userListFavoris.getId());
-            return referencedWarning;
-        }
+
         final SimulationPret userSimulationPret = simulationPretRepository.findFirstByUser(user);
         if (userSimulationPret != null) {
             referencedWarning.setKey("user.simulationPret.user.referenced");

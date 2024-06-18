@@ -1,8 +1,8 @@
 package io.bootify.credit_offre_habitat.offre_immobilier.rest;
 
-import io.bootify.credit_offre_habitat.list_favoris.repos.ListFavorisRepository;
 import io.bootify.credit_offre_habitat.offre_immobilier.domain.OffreImmobilier;
 import io.bootify.credit_offre_habitat.offre_immobilier.model.OffreImmobilierDTO;
+import io.bootify.credit_offre_habitat.offre_immobilier.model.OffreImmobilierResponseDTO;
 import io.bootify.credit_offre_habitat.offre_immobilier.repos.OffreImmobilierRepository;
 import io.bootify.credit_offre_habitat.offre_immobilier.service.OffreImmobilierService;
 import io.bootify.credit_offre_habitat.util.ReferencedException;
@@ -21,13 +21,10 @@ import org.springframework.web.bind.annotation.*;
 public class OffreImmobilierResource {
 
     private final OffreImmobilierService offreImmobilierService;
-    private final ListFavorisRepository listFavorisRepository;
     private final OffreImmobilierRepository offreImmobilierRepository;
 
-    public OffreImmobilierResource(final OffreImmobilierService offreImmobilierService,
-                                   final ListFavorisRepository listFavorisRepository, final OffreImmobilierRepository offreImmobilierRepository, OffreImmobilierRepository offreImmobilierRepository1) {
+    public OffreImmobilierResource(final OffreImmobilierService offreImmobilierService, final OffreImmobilierRepository offreImmobilierRepository, OffreImmobilierRepository offreImmobilierRepository1) {
         this.offreImmobilierService = offreImmobilierService;
-        this.listFavorisRepository = listFavorisRepository;
         this.offreImmobilierRepository = offreImmobilierRepository1;
     }
 
@@ -37,7 +34,7 @@ public class OffreImmobilierResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OffreImmobilierDTO> getOffreImmobilier(
+    public ResponseEntity<OffreImmobilierResponseDTO> getOffreImmobilier(
             @PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(offreImmobilierService.get(id));
     }

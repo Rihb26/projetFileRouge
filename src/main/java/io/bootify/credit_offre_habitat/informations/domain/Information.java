@@ -1,6 +1,5 @@
-package io.bootify.credit_offre_habitat.list_favoris.domain;
+package io.bootify.credit_offre_habitat.informations.domain;
 
-import io.bootify.credit_offre_habitat.offre_immobilier.domain.OffreImmobilier;
 import io.bootify.credit_offre_habitat.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,27 +10,23 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
 @Entity
-@Table(name = "ListFavorises")
+@Table(name = "Information")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
-public class ListFavoris {
+public class Information {
 
     @Id
     @Column(nullable = false, updatable = false)
@@ -47,16 +42,21 @@ public class ListFavoris {
     )
     private Long id;
 
-    @Column(columnDefinition = "jsonb")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private List<String> listFavoris;
+    @Column
+    private LocalDateTime dateDePublication;
+
+    @Column(nullable = false)
+    private String contenu;
+
+    @Column(nullable = false)
+    private String titre;
+
+    @Column(nullable = false)
+    private String auteur;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-    @OneToMany(mappedBy = "listFavoris")
-    private Set<OffreImmobilier> offreImmobiliers;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -65,5 +65,8 @@ public class ListFavoris {
     @LastModifiedDate
     @Column(nullable = false)
     private OffsetDateTime lastUpdated;
+
+    @Column
+    private String imageUrl;
 
 }

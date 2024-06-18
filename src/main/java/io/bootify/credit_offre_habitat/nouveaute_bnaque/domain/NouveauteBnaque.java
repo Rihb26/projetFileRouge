@@ -66,4 +66,7 @@ public class NouveauteBnaque {
     @Column(nullable = false)
     private OffsetDateTime lastUpdated;
 
+    @Column
+    private String imageUrl;
+
 }

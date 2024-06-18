@@ -1,4 +1,4 @@
-package io.bootify.credit_offre_habitat.nouveaute_bnaque.model;
+package io.bootify.credit_offre_habitat.informations.model;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NouveauteBnaqueDTO {
+public class InformationDTO {
 
     private Long id;
 

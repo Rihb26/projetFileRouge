@@ -1,0 +1,16 @@
+{{#models}}
+    {{#model}}
+        export interface {{classname}} {
+        {{#vars}}
+            /**
+            * {{description}}
+            * {{#isListContainer}}
+                * @maxItems {{maxItems}}
+                * @minItems {{minItems}}
+                * {{/isListContainer}}
+            */
+            {{name}}{{^required}}?{{/required}}: {{#isListContainer}}Array<{{itemsType}}>{{/isListContainer}}{{^isListContainer}}{{dataType}}{{/isListContainer}};
+        {{/vars}}
+        }
+    {{/model}}
+{{/models}}

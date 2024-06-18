@@ -1,15 +1,19 @@
 package io.bootify.credit_offre_habitat.offre_immobilier.service;
 
-import io.bootify.credit_offre_habitat.list_favoris.domain.ListFavoris;
-import io.bootify.credit_offre_habitat.list_favoris.repos.ListFavorisRepository;
+import io.bootify.credit_offre_habitat.offre_immobilier.domain.enums.*;
+import io.bootify.credit_offre_habitat.offre_immobilier.domain.image.Image;
 import io.bootify.credit_offre_habitat.offre_immobilier.domain.OffreImmobilier;
 import io.bootify.credit_offre_habitat.offre_immobilier.model.OffreImmobilierDTO;
+import io.bootify.credit_offre_habitat.offre_immobilier.model.OffreImmobilierResponseDTO;
 import io.bootify.credit_offre_habitat.offre_immobilier.repos.OffreImmobilierRepository;
 import io.bootify.credit_offre_habitat.simulation_pret.domain.SimulationPret;
 import io.bootify.credit_offre_habitat.simulation_pret.repos.SimulationPretRepository;
 import io.bootify.credit_offre_habitat.util.NotFoundException;
 import io.bootify.credit_offre_habitat.util.ReferencedWarning;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +22,11 @@ import org.springframework.stereotype.Service;
 public class OffreImmobilierService {
 
     private final OffreImmobilierRepository offreImmobilierRepository;
-    private final ListFavorisRepository listFavorisRepository;
     private final SimulationPretRepository simulationPretRepository;
 
     public OffreImmobilierService(final OffreImmobilierRepository offreImmobilierRepository,
-            final ListFavorisRepository listFavorisRepository,
             final SimulationPretRepository simulationPretRepository) {
         this.offreImmobilierRepository = offreImmobilierRepository;
-        this.listFavorisRepository = listFavorisRepository;
         this.simulationPretRepository = simulationPretRepository;
     }
 
@@ -36,10 +37,22 @@ public class OffreImmobilierService {
                 .toList();
     }
 
-    public OffreImmobilierDTO get(final Long id) {
-        return offreImmobilierRepository.findById(id)
-                .map(offreImmobilier -> mapToDTO(offreImmobilier, new OffreImmobilierDTO()))
-                .orElseThrow(NotFoundException::new);
+    public OffreImmobilierResponseDTO get(final Long id) {
+        OffreImmobilier offreImmobilier = offreImmobilierRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("OffreImmobilier not found"));
+
+        OffreImmobilierDTO dto = mapToDTO(offreImmobilier, new OffreImmobilierDTO());
+
+        OffreImmobilierResponseDTO responseDTO = new OffreImmobilierResponseDTO();
+        responseDTO.setOffreImmobilier(dto);
+        responseDTO.setTypeBienOptions(TypeBien.values());
+        responseDTO.setAmeublementOptions(Ameublement.values());
+        responseDTO.setStatutProprieteOptions(StatutPropriete.values());
+        responseDTO.setChambresOptions(Chambres.values());
+        responseDTO.setSallesDeBainOptions(SallesDeBain.values());
+        responseDTO.setAgeProprieteOptions(AgePropriete.values());
+
+        return responseDTO;
     }
 
     public Long create(final OffreImmobilierDTO offreImmobilierDTO) {
@@ -59,28 +72,44 @@ public class OffreImmobilierService {
         offreImmobilierRepository.deleteById(id);
     }
 
-    private OffreImmobilierDTO mapToDTO(final OffreImmobilier offreImmobilier,
-            final OffreImmobilierDTO offreImmobilierDTO) {
+    private OffreImmobilierDTO mapToDTO(final OffreImmobilier offreImmobilier, final OffreImmobilierDTO offreImmobilierDTO) {
         offreImmobilierDTO.setId(offreImmobilier.getId());
         offreImmobilierDTO.setTypeBien(offreImmobilier.getTypeBien());
         offreImmobilierDTO.setAdresse(offreImmobilier.getAdresse());
         offreImmobilierDTO.setPrix(offreImmobilier.getPrix());
         offreImmobilierDTO.setDescription(offreImmobilier.getDescription());
-        offreImmobilierDTO.setListFavoris(offreImmobilier.getListFavoris() == null ? null : offreImmobilier.getListFavoris().getId());
+        offreImmobilierDTO.setStatutPropriete(offreImmobilier.getStatutPropriete());
+        offreImmobilierDTO.setAmeublement(offreImmobilier.getAmeublement());
+        offreImmobilierDTO.setChambres(offreImmobilier.getChambres());
+        offreImmobilierDTO.setSallesDeBain(offreImmobilier.getSallesDeBain());
+        offreImmobilierDTO.setSurface(offreImmobilier.getSurface());
+        offreImmobilierDTO.setAgePropriete(offreImmobilier.getAgePropriete());
+        offreImmobilierDTO.setImageUrls(offreImmobilier.getImages().stream().map(Image::getUrl).collect(Collectors.toList()));
         return offreImmobilierDTO;
     }
 
-    private OffreImmobilier mapToEntity(final OffreImmobilierDTO offreImmobilierDTO,
-            final OffreImmobilier offreImmobilier) {
+    private OffreImmobilier mapToEntity(final OffreImmobilierDTO offreImmobilierDTO, final OffreImmobilier offreImmobilier) {
         offreImmobilier.setTypeBien(offreImmobilierDTO.getTypeBien());
         offreImmobilier.setAdresse(offreImmobilierDTO.getAdresse());
         offreImmobilier.setPrix(offreImmobilierDTO.getPrix());
         offreImmobilier.setDescription(offreImmobilierDTO.getDescription());
-        final ListFavoris listFavoris = offreImmobilierDTO.getListFavoris() == null ? null : listFavorisRepository.findById(offreImmobilierDTO.getListFavoris())
-                .orElseThrow(() -> new NotFoundException("listFavoris not found"));
-        offreImmobilier.setListFavoris(listFavoris);
+        offreImmobilier.setStatutPropriete(offreImmobilierDTO.getStatutPropriete());
+        offreImmobilier.setAmeublement(offreImmobilierDTO.getAmeublement());
+        offreImmobilier.setChambres(offreImmobilierDTO.getChambres());
+        offreImmobilier.setSallesDeBain(offreImmobilierDTO.getSallesDeBain());
+        offreImmobilier.setSurface(offreImmobilierDTO.getSurface());
+        offreImmobilier.setAgePropriete(offreImmobilierDTO.getAgePropriete());
+        Set<Image> images = offreImmobilierDTO.getImageUrls().stream()
+                .map(url -> {
+                    Image image = new Image();
+                    image.setUrl(url);
+                    image.setOffreImmobilier(offreImmobilier);
+                    return image;
+                }).collect(Collectors.toSet());
+        offreImmobilier.setImages(images);
         return offreImmobilier;
     }
+
 
     public ReferencedWarning getReferencedWarning(final Long id) {
         final ReferencedWarning referencedWarning = new ReferencedWarning();

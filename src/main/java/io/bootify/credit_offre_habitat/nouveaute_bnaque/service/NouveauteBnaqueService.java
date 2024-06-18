@@ -61,6 +61,7 @@ public class NouveauteBnaqueService {
         nouveauteBnaqueDTO.setTitre(nouveauteBnaque.getTitre());
         nouveauteBnaqueDTO.setAuteur(nouveauteBnaque.getAuteur());
         nouveauteBnaqueDTO.setUser(nouveauteBnaque.getUser() == null ? null : nouveauteBnaque.getUser().getId());
+        nouveauteBnaqueDTO.setImageUrl(nouveauteBnaque.getImageUrl());
         return nouveauteBnaqueDTO;
     }
 
@@ -73,6 +74,7 @@ public class NouveauteBnaqueService {
         final User user = nouveauteBnaqueDTO.getUser() == null ? null : userRepository.findById(nouveauteBnaqueDTO.getUser())
                 .orElseThrow(() -> new NotFoundException("user not found"));
         nouveauteBnaque.setUser(user);
+        nouveauteBnaque.setImageUrl(nouveauteBnaqueDTO.getImageUrl());
         return nouveauteBnaque;
     }
 

@@ -1,20 +1,15 @@
 package io.bootify.credit_offre_habitat.offre_immobilier.domain;
 
-import io.bootify.credit_offre_habitat.list_favoris.domain.ListFavoris;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.bootify.credit_offre_habitat.offre_immobilier.domain.enums.*;
+import io.bootify.credit_offre_habitat.offre_immobilier.domain.image.Image;
 import io.bootify.credit_offre_habitat.simulation_pret.domain.SimulationPret;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import io.bootify.credit_offre_habitat.user.domain.User;
+import jakarta.persistence.*;
+
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,8 +39,9 @@ public class OffreImmobilier {
     )
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String typeBien;
+    private TypeBien typeBien;
 
     @Column(nullable = false)
     private String adresse;
@@ -53,14 +49,37 @@ public class OffreImmobilier {
     @Column(nullable = false)
     private String prix;
 
-    @Column
+    @Column(columnDefinition ="text")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "list_favoris_id")
-    private ListFavoris listFavoris;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatutPropriete statutPropriete;
 
-    @OneToMany(mappedBy = "offreImmobilier")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Ameublement ameublement;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Chambres chambres;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SallesDeBain sallesDeBain;
+
+    @Column(nullable = false)
+    private int surface;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AgePropriete agePropriete;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "favoris")
+    private Set<User> users = new HashSet<>();
+
+    @OneToMany(mappedBy = "offreImmobilier",fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SimulationPret> simulationPrets;
 
     @CreatedDate
@@ -70,5 +89,9 @@ public class OffreImmobilier {
     @LastModifiedDate
     @Column(nullable = false)
     private OffsetDateTime lastUpdated;
+
+    @OneToMany(mappedBy = "offreImmobilier", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Set<Image> images = new HashSet<>();
 
 }
