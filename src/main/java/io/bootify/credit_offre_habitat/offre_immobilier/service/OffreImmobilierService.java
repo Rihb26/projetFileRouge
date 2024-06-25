@@ -33,7 +33,7 @@ public class OffreImmobilierService {
     public List<OffreImmobilierDTO> findAll() {
         final List<OffreImmobilier> offreImmobiliers = offreImmobilierRepository.findAll(Sort.by("id"));
         return offreImmobiliers.stream()
-                .map(offreImmobilier -> mapToDTO(offreImmobilier, new OffreImmobilierDTO()))
+                .map(this::mapToDTO)
                 .toList();
     }
 
@@ -41,7 +41,7 @@ public class OffreImmobilierService {
         OffreImmobilier offreImmobilier = offreImmobilierRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("OffreImmobilier not found"));
 
-        OffreImmobilierDTO dto = mapToDTO(offreImmobilier, new OffreImmobilierDTO());
+        OffreImmobilierDTO dto = mapToDTO(offreImmobilier);
 
         OffreImmobilierResponseDTO responseDTO = new OffreImmobilierResponseDTO();
         responseDTO.setOffreImmobilier(dto);
@@ -72,20 +72,26 @@ public class OffreImmobilierService {
         offreImmobilierRepository.deleteById(id);
     }
 
-    private OffreImmobilierDTO mapToDTO(final OffreImmobilier offreImmobilier, final OffreImmobilierDTO offreImmobilierDTO) {
-        offreImmobilierDTO.setId(offreImmobilier.getId());
-        offreImmobilierDTO.setTypeBien(offreImmobilier.getTypeBien());
-        offreImmobilierDTO.setAdresse(offreImmobilier.getAdresse());
-        offreImmobilierDTO.setPrix(offreImmobilier.getPrix());
-        offreImmobilierDTO.setDescription(offreImmobilier.getDescription());
-        offreImmobilierDTO.setStatutPropriete(offreImmobilier.getStatutPropriete());
-        offreImmobilierDTO.setAmeublement(offreImmobilier.getAmeublement());
-        offreImmobilierDTO.setChambres(offreImmobilier.getChambres());
-        offreImmobilierDTO.setSallesDeBain(offreImmobilier.getSallesDeBain());
-        offreImmobilierDTO.setSurface(offreImmobilier.getSurface());
-        offreImmobilierDTO.setAgePropriete(offreImmobilier.getAgePropriete());
-        offreImmobilierDTO.setImageUrls(offreImmobilier.getImages().stream().map(Image::getUrl).collect(Collectors.toList()));
-        return offreImmobilierDTO;
+    public List<OffreImmobilierDTO> getFilteredOffres(String adresse, List<TypeBien> typeBien, Integer budgetMin, Integer budgetMax, List<Chambres> chambres, List<SallesDeBain> sallesDeBain, List<AgePropriete> agePropriete) {
+        List<OffreImmobilier> offres = offreImmobilierRepository.findByCriteria(adresse, typeBien, budgetMin, budgetMax, chambres, sallesDeBain, agePropriete);
+        return offres.stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    private OffreImmobilierDTO mapToDTO(OffreImmobilier offreImmobilier) {
+        OffreImmobilierDTO dto = new OffreImmobilierDTO();
+        dto.setId(offreImmobilier.getId());
+        dto.setTypeBien(offreImmobilier.getTypeBien());
+        dto.setAdresse(offreImmobilier.getAdresse());
+        dto.setPrix(offreImmobilier.getPrix());
+        dto.setDescription(offreImmobilier.getDescription());
+        dto.setStatutPropriete(offreImmobilier.getStatutPropriete());
+        dto.setAmeublement(offreImmobilier.getAmeublement());
+        dto.setChambres(offreImmobilier.getChambres());
+        dto.setSallesDeBain(offreImmobilier.getSallesDeBain());
+        dto.setSurface(offreImmobilier.getSurface());
+        dto.setAgePropriete(offreImmobilier.getAgePropriete());
+        dto.setImageUrls(offreImmobilier.getImages().stream().map(Image::getUrl).collect(Collectors.toList()));
+        return dto;
     }
 
     private OffreImmobilier mapToEntity(final OffreImmobilierDTO offreImmobilierDTO, final OffreImmobilier offreImmobilier) {

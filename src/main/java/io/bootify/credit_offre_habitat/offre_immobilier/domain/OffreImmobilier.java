@@ -40,7 +40,7 @@ public class OffreImmobilier {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "type_bien",nullable = false)
     private TypeBien typeBien;
 
     @Column(nullable = false)
@@ -53,7 +53,7 @@ public class OffreImmobilier {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name="status_propriete",nullable = false)
     private StatutPropriete statutPropriete;
 
     @Enumerated(EnumType.STRING)
@@ -65,14 +65,14 @@ public class OffreImmobilier {
     private Chambres chambres;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "salles_de_bain",nullable = false)
     private SallesDeBain sallesDeBain;
 
     @Column(nullable = false)
     private int surface;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "age_propriete",nullable = false)
     private AgePropriete agePropriete;
 
     @JsonIgnore
@@ -83,11 +83,11 @@ public class OffreImmobilier {
     private Set<SimulationPret> simulationPrets;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(name="date_created",nullable = false, updatable = false)
     private OffsetDateTime dateCreated;
 
     @LastModifiedDate
-    @Column(nullable = false)
+    @Column(name="last_updated",nullable = false)
     private OffsetDateTime lastUpdated;
 
     @OneToMany(mappedBy = "offreImmobilier", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

@@ -76,5 +76,4 @@ public class SimulationPret {
     @LastModifiedDate
     @Column(nullable = false)
     private OffsetDateTime lastUpdated;
-
 }

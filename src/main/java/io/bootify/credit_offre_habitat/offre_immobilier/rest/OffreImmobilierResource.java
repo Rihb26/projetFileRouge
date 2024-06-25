@@ -1,6 +1,7 @@
 package io.bootify.credit_offre_habitat.offre_immobilier.rest;
 
 import io.bootify.credit_offre_habitat.offre_immobilier.domain.OffreImmobilier;
+import io.bootify.credit_offre_habitat.offre_immobilier.domain.enums.*;
 import io.bootify.credit_offre_habitat.offre_immobilier.model.OffreImmobilierDTO;
 import io.bootify.credit_offre_habitat.offre_immobilier.model.OffreImmobilierResponseDTO;
 import io.bootify.credit_offre_habitat.offre_immobilier.repos.OffreImmobilierRepository;
@@ -64,12 +65,18 @@ public class OffreImmobilierResource {
         offreImmobilierService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/filter")
-    public List<OffreImmobilier> filterOffreImmobilier(@RequestParam(value = "typeBien", required = false) String typeBien,
-                                                       @RequestParam(value = "adresse", required = false) String adresse,
-                                                       @RequestParam(value = "prix", required = false) String prix,
-                                                       @RequestParam(value = "description", required = false) String description) {
-        return offreImmobilierRepository.findByTypeBienAndAdresseAndPrixAndDescription(typeBien, adresse, prix, description);
+    public ResponseEntity<List<OffreImmobilierDTO>> filterOffreImmobiliers(
+            @RequestParam(required = false) String adresse,
+            @RequestParam(required = false) List<TypeBien> typeBien,
+            @RequestParam(required = false) Integer budgetMin,
+            @RequestParam(required = false) Integer budgetMax,
+            @RequestParam(required = false) List<Chambres> chambres,
+            @RequestParam(required = false) List<SallesDeBain> sallesDeBain,
+            @RequestParam(required = false) List<AgePropriete> agePropriete) {
+        return ResponseEntity.ok(offreImmobilierService.getFilteredOffres(adresse, typeBien, budgetMin, budgetMax, chambres, sallesDeBain, agePropriete));
     }
+
 
 }

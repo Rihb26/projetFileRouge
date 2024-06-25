@@ -49,7 +49,7 @@ public class FavorisService {
     @Transactional(readOnly = true)
     public Set<OffreImmobilier> getFavoris(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
-        user.getFavoris().size();  // Force initialization
+        user.getFavoris().size();
         return user.getFavoris();
     }
 }
